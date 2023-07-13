@@ -11,7 +11,7 @@ It can be installed by:
 
 <div class="cell markdown">
 
-pip install nse_workday
+pip install nse-workday
 
 </div>
 
