@@ -57,7 +57,7 @@ get_new_holidays(mode='normal')
 
 <div class="cell markdown">
 
-1.  
+2.  
 
 update_holiday(dates_set = 'holidays')
 
@@ -96,7 +96,7 @@ update_holiday()
 
 <div class="cell markdown">
 
-1.  
+3.  
 
 isHoliday(input_date)
 
@@ -126,7 +126,7 @@ isHoliday(input_date="29-06-2023")
 
 All below functions returns datetime.datetime item / list.
 
-1.  
+4.  
 
 workday(input_date, direction)
 
@@ -157,7 +157,7 @@ workday(input_date="29-06-2023",direction='prev')
 
 <div class="cell markdown">
 
-1.  
+5.  
 
 get_holidays_list(start_date, end_date)
 
@@ -189,7 +189,7 @@ get_holidays_list(start_date="20-6-2023", end_date="30-6-2023")
 
 <div class="cell markdown">
 
-1.  
+6.  
 
 get_workdays_list(start_date, end_date)
 
@@ -226,7 +226,7 @@ get_workdays_list(start_date="20-6-2023", end_date="30-6-2023")
 
 <div class="cell markdown">
 
-1.  
+7.  
 
 get_month_weekdays(input_date, required_weekday, filtered=True)
 
@@ -262,7 +262,7 @@ get_month_weekdays(input_date="21-6-2023", required_weekday='thursday')
 
 <div class="cell markdown">
 
-1.  
+8.  
 
 month_last_weekday(input_date, last_weekday, filtered=True)
 
@@ -294,7 +294,7 @@ month_last_weekday(input_date="21-6-2023", last_weekday='thursday')
 
 <div class="cell markdown">
 
-1.  
+9.  
 
 get_weekdays(start_date, end_date, required_weekday, filtered=True)
 
