@@ -46,7 +46,7 @@ def __get_holylist() -> List[datetime]:
         logging.debug("1 : {}".format(e))
 
 @lru_cache(maxsize=None)
-def __get_excelist(dtypes: Union[Type[str], Type[datetime]] = datetime) -> Union[List[str], List[datetime]]:
+def __get_excelist() -> List[datetime]:
     try:
         file_path = os.path.join(lib_path, "exclist.d")
         with open(file_path, 'rb') as f:
