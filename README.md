@@ -3,7 +3,7 @@
 <div class="cell markdown">
 
   A library to calculate holidays, workdays and some other functions based
-on NSE trading holidays from 2010 - 2023.
+on NSE trading holidays from 2010 - 2024.
 
 It can be installed by:
 
