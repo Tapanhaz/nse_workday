@@ -43,7 +43,7 @@ def __get_holylist() -> List[datetime]:
             hlist = pickle.load(f)
         return hlist
     except Exception as e:
-        logging.debug("1 : {}".format(e))
+        logging.error("Error checking holidays list : {}".format(e))
 
 @lru_cache(maxsize=None)
 def __get_excelist() -> List[datetime]:
@@ -53,7 +53,7 @@ def __get_excelist() -> List[datetime]:
             hlist = pickle.load(f)
         return hlist
     except Exception as e:
-        logging.debug("1 : {}".format(e))
+        logging.error("Error checking exception list : {}".format(e))
 
 
 def __format_input(dateobj : Union[DateFormat,date, datetime]) -> datetime:
@@ -69,13 +69,17 @@ def __format_input(dateobj : Union[DateFormat,date, datetime]) -> datetime:
     elif isinstance(dateobj, date):
         return datetime.combine(dateobj, time())
     else:
-        logging.debug("Invalid input type. Expected str, date, or datetime.")
+        logging.error("Invalid input type. Expected str, date, or datetime.")
         return
 
-def __get_holidays(start_date : Union[DateFormat,date, datetime],  end_date : Union[DateFormat,date, datetime] = None) -> Union[List[datetime], tuple]:
+def __get_holidays(
+        start_date : Union[DateFormat,date, datetime],  
+        end_date : Union[DateFormat,date, datetime] = None
+        ) -> Union[List[datetime], tuple]:
+    
     start_date = __format_input(start_date)
     if start_date is None:
-        logging.debug("Check Input Parameters") 
+        logging.error("Check Input Parameters") 
         return
     holidays = __get_holylist()
     st_yr = start_date.year
@@ -270,7 +274,10 @@ def update_holiday(dates_set : Literal['holidays', 'exceptions'] = 'holidays'):
         else:
             print("Error in data")
 
-def workday(input_date: Union[DateFormat,date, datetime], direction:Literal["prev", "next"]) -> datetime:
+def workday(
+        input_date: Union[DateFormat,date, datetime], 
+        direction:Literal["prev", "next"]
+        ) -> datetime:
     """Return nearest workday of the input_date if input_date is a holiday .. if not will return the same """     
     if direction not in ["prev", "next"]:
         logging.debug("Please input direction 'prev' or 'next'")
@@ -279,7 +286,7 @@ def workday(input_date: Union[DateFormat,date, datetime], direction:Literal["pre
         holidays, input_date = __get_holidays(start_date=input_date)
         expc_days = __get_excelist()
     except Exception as e:
-        logging.debug("3 : {}".format(e))
+        logging.error("Error : {}".format(e))
         return
     weekend_list = [5, 6] 
 
@@ -292,29 +299,38 @@ def workday(input_date: Union[DateFormat,date, datetime], direction:Literal["pre
             break
     return input_date
 
-def get_holidays_list(start_date : Union[DateFormat,date, datetime],  end_date : Union[DateFormat,date, datetime]) -> List[datetime]:
+def get_holidays_list(
+        start_date : Union[DateFormat,date, datetime],  
+        end_date : Union[DateFormat,date, datetime],
+        include_weekends: bool= True
+        ) -> List[datetime]:
     """Return all holidays of the given range as a datetime.datetime list"""    
     try:
         holidays, start_date, end_date = __get_holidays(start_date=start_date, end_date=end_date)
         expc_days = __get_excelist()
     except Exception as e:
-        logging.debug("4 : {}".format(e))
+        logging.error("Error getting holidays : {}".format(e))
         return
     
-    holidays_in_range = [start_date + timedelta(days=i) for i in range((end_date - start_date).days + 1) 
-                if (start_date + timedelta(days=i)).weekday() >= 5 and 
-                (start_date + timedelta(days=i)) not in expc_days
-                ]+ [dt for dt in holidays if start_date <= dt <= end_date]
+    if include_weekends:    
+        holidays_in_range = [start_date + timedelta(days=i) for i in range((end_date - start_date).days + 1) 
+                    if (start_date + timedelta(days=i)).weekday() >= 5 and 
+                    (start_date + timedelta(days=i)) not in expc_days
+                    ]+ [dt for dt in holidays if start_date <= dt <= end_date]
 
-    return  sorted(holidays_in_range)
+        return  sorted(holidays_in_range)
+    return sorted([dt for dt in holidays if start_date <= dt <= end_date])
 
-def get_workdays_list(start_date : Union[DateFormat,date, datetime],  end_date : Union[DateFormat,date, datetime]) -> List[datetime]:
+def get_workdays_list(
+        start_date : Union[DateFormat,date, datetime],  
+        end_date : Union[DateFormat,date, datetime]
+        ) -> List[datetime]:
     """Return all workdays of the given range as a datetime.datetime list"""
     try:
         holidays, start_date, end_date = __get_holidays(start_date=start_date, end_date=end_date)
         expc_days = __get_excelist()
     except Exception as e:
-        logging.debug("5 : {}".format(e))
+        logging.error("Error getting workdays : {}".format(e))
         return
     holidays_list = [start_date + timedelta(days=i) for i in 
                      range((end_date - start_date).days + 1) 
@@ -332,11 +348,14 @@ def isHoliday(input_date: Union[DateFormat,date, datetime]) -> Union[bool, None]
         holidays, input_date = __get_holidays(start_date=input_date)
         expc_days = __get_excelist()
     except Exception as e:
-        logging.debug("isHoliday Error  : {}".format(e))
+        logging.error("isHoliday Error  : {}".format(e))
         return
     return input_date in holidays or input_date.weekday() >= 5 and input_date not in expc_days
 
-def month_last_weekday(input_date: Union[DateFormat,date, datetime], last_weekday: str, filtered :bool = True) -> datetime:
+def month_last_weekday(
+        input_date: Union[DateFormat,date, datetime], 
+        last_weekday: str, filtered :bool = True
+        ) -> datetime:
     """Return last occurences of the given weekday in the month of the input_date as datetime.datetime .
     if filtered True it will return previous workday if the calculated weekday is holiday"""
     try:
@@ -355,10 +374,13 @@ def month_last_weekday(input_date: Union[DateFormat,date, datetime], last_weekda
 
         return last_appearance
     except Exception as e:
-        logging.debug("Error in month last weekday : {}".format(e))
+        logging.error("Error in month last weekday : {}".format(e))
         return
 
-def get_month_weekdays(input_date: Union[DateFormat,date, datetime], required_weekday: str, filtered :bool = True) -> List[datetime]:
+def get_month_weekdays(
+        input_date: Union[DateFormat,date, datetime], 
+        required_weekday: str, filtered :bool = True
+        ) -> List[datetime]:
     """Return all occurences of the given weekday in the month of the input_date as a datetime.datetime list.
     if filtered True it will return previous workday if any calculated weekday is holiday"""
     try:
@@ -391,10 +413,14 @@ def get_month_weekdays(input_date: Union[DateFormat,date, datetime], required_we
 
             return weekday_dates
     except Exception as e:
-        logging.debug("Error in monthly weekday : {}".format(e))
+        logging.error("Error in monthly weekday : {}".format(e))
         return
 
-def get_weekdays(start_date : Union[DateFormat,date, datetime], end_date : Union[DateFormat,date, datetime], required_weekday: str, filtered :bool = True) -> List[datetime]:
+def get_weekdays(
+        start_date : Union[DateFormat,date, datetime], 
+        end_date : Union[DateFormat,date, datetime], 
+        required_weekday: str, filtered :bool = True
+        ) -> List[datetime]:
     """Return all occurences of the given weekday in the range of start_date <-> end_date as a datetime.datetime list.
     if filtered True it will return previous workday if any calculated weekday is holiday"""
     try:
@@ -425,5 +451,5 @@ def get_weekdays(start_date : Union[DateFormat,date, datetime], end_date : Union
 
             return weekday_dates
     except Exception as e:
-        logging.debug("Error in weekday range : {}".format(e))
+        logging.error("Error in weekday range : {}".format(e))
         return
