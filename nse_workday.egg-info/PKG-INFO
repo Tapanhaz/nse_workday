@@ -1,10 +1,15 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: nse_workday
-Version: 0.0.7
+Version: 0.0.8
 Summary: For Calculating days based on NSE Holidays(2010-2025)
 Home-page: https://github.com/Tapanhaz/nse_workday
 Author: Tapan Hazarika
 Description-Content-Type: text/markdown
+Dynamic: author
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: summary
 
 # nse_workday
 

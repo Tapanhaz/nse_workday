@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
    name='nse_workday',
-   version='0.0.7',
+   version='0.0.8',
    description='For Calculating days based on NSE Holidays(2010-2025)',
    author='Tapan Hazarika',
    url='https://github.com/Tapanhaz/nse_workday',
